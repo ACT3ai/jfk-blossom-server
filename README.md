@@ -1,6 +1,6 @@
 # 🌸 Blossom-server
 
-blossom-server is a Typescript implementation of a [Blossom Server](https://github.com/hzrd149/blossom/blob/master/Server.md)
+blossom-server is a Typescript implementation of a [Blossom Server](https://github.com/hzrd149/blossom)
 
 ## Supported BUDs
 
