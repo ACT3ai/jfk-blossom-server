@@ -103,6 +103,19 @@ export class UploadForm extends LitElement {
     this.optimize = !this.optimize;
   }
 
+  handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      this.selected = e.dataTransfer.files[0];
+    }
+  }
+
   render() {
     const preview = !this.selected
       ? html`<div class="h-full w-full text-center flex flex-col items-center justify-center items-center">
@@ -140,6 +153,8 @@ export class UploadForm extends LitElement {
           <div class="flex items-center justify-center w-full">
             <label
               class="flex flex-col rounded-lg border-4 border-dashed w-full h-50 p-10 group text-center cursor-pointer"
+              @dragover="${this.handleDragOver}"
+              @drop="${this.handleDrop}"
             >
               ${preview}
               <input name="blob" type="file" class="hidden" @change="${this.inputChange}" />
