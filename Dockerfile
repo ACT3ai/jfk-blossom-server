@@ -8,11 +8,7 @@ RUN npm i -g pnpm
 WORKDIR /app
 COPY . .
 
-FROM base AS node-gyp
-# Install required packages for node-gyp
-RUN apk add --no-cache python3 make g++ py3-pip
-
-FROM node-gyp AS prod-deps
+FROM base AS prod-deps
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 FROM prod-deps AS build

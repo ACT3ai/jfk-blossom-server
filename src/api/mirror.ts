@@ -84,21 +84,21 @@ router.put<CommonState>("/mirror", async (ctx) => {
 
     let blob: BlobMetadata;
 
-    if (!blobDB.hasBlob(upload.sha256)) {
+    if (!(await blobDB.hasBlob(upload.sha256))) {
       log("Saving", upload.sha256, type);
       await storage.writeBlob(upload.sha256, readUpload(upload), type);
       await removeUpload(upload);
 
       const now = dayjs().unix();
-      blob = blobDB.addBlob({ sha256: upload.sha256, size: upload.size, type, uploaded: now });
-      updateBlobAccess(upload.sha256, dayjs().unix());
+      blob = await blobDB.addBlob({ sha256: upload.sha256, size: upload.size, type, uploaded: now });
+      await updateBlobAccess(upload.sha256, dayjs().unix());
     } else {
-      blob = blobDB.getBlob(upload.sha256);
+      blob = await blobDB.getBlob(upload.sha256);
       await removeUpload(upload);
     }
 
-    if (pubkey && !blobDB.hasOwner(upload.sha256, pubkey)) {
-      blobDB.addOwner(blob.sha256, pubkey);
+    if (pubkey && !(await blobDB.hasOwner(upload.sha256, pubkey))) {
+      await blobDB.addOwner(blob.sha256, pubkey);
     }
 
     ctx.status = 200;

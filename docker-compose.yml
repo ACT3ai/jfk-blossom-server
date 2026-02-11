@@ -1,19 +1,40 @@
 volumes:
   data: {}
+  # pgdata: {}
 
 services:
-  blossom:
+  # postgres:
+  #   image: postgres:16-alpine
+  #   environment:
+  #     POSTGRES_USER: ${DATABASE_USER:-blossom}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-blossom}
+  #     POSTGRES_DB: ${DATABASE_NAME:-blossom}
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-blossom}"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+
+  jfk-blossom:
     # image: ghcr.io/hzrd149/blossom-server:master
-    image: blossom-server
+    image: jfk-blossom-server
     build: .
     ports:
       - 3000:3000
     env_file: .env
-    # enable debug logging
-    # environment:
-    #   Custom config path
-    #   BLOSSOM_CONFIG: "data/config.yml"
-    #   DEBUG: "*"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      DATABASE_USER: ${DATABASE_USER:-blossom}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-blossom}
+      DATABASE_NAME: ${DATABASE_NAME:-blossom}
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
     volumes:
       # mount data volume
       - data:/app/data

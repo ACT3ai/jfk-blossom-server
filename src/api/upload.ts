@@ -95,8 +95,8 @@ router.put<UploadState>("/upload", async (ctx) => {
     const blob = await addFromUpload(upload, type);
 
     // add owner
-    if (ctx.state.auth?.pubkey && !blobDB.hasOwner(upload.sha256, ctx.state.auth.pubkey)) {
-      blobDB.addOwner(blob.sha256, ctx.state.auth.pubkey);
+    if (ctx.state.auth?.pubkey && !(await blobDB.hasOwner(upload.sha256, ctx.state.auth.pubkey))) {
+      await blobDB.addOwner(blob.sha256, ctx.state.auth.pubkey);
     }
 
     ctx.status = 200;

@@ -12,7 +12,7 @@ import router from "./api/index.js";
 import logger from "./logger.js";
 import { config } from "./config.js";
 import { isHttpError } from "./helpers/error.js";
-import db from "./db/db.js";
+import { pool } from "./db/db.js";
 import { pruneStorage } from "./storage/index.js";
 import { generate } from "generate-password";
 
@@ -90,8 +90,8 @@ async function cron() {
 setTimeout(cron, 60_000);
 
 async function shutdown() {
-  logger("Saving database...");
-  db.close();
+  logger("Closing database connection...");
+  await pool.end();
   process.exit(0);
 }
 
