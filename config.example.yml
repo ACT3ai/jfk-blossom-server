@@ -9,8 +9,6 @@
 # By default it uses the domain the incoming HTTP request was made on
 publicDomain: ""
 
-databasePath: data/sqlite.db
-
 dashboard:
   # enable or disable the admin dashboard
   enabled: true
@@ -45,8 +43,7 @@ storage:
   local:
     dir: ./data/blobs
 
-  # see minio docs for options:
-  # https://min.io/docs/minio/linux/developers/javascript/API.html#new-minio-client-endpoint-port-usessl-accesskey-secretkey-region-transport-sessiontoken-partsize
+  # AWS S3 or S3-compatible storage (e.g. MinIO, DigitalOcean Spaces)
   # s3:
   #   endpoint: https://s3.endpoint.com
   #   port: 443
@@ -55,7 +52,9 @@ storage:
   #   secretKey: xxxxxxxxx
   #   useSSL: true
   #   region: us-east-1
-  #   If this is set the server will redirect clients when loading blobs
+  #   # Use path-style URLs (required for most S3-compatible services, default: true)
+  #   pathStyle: true
+  #   # If this is set the server will redirect clients when loading blobs
   #   publicURL: https://s3.region.example.com/
   #
   #   You can also use environment variables for sensitive values:
