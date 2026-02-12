@@ -6,3 +6,7 @@ database.json
 config.yml
 dist
 .netrc
+
+.claude
+.changeset
+.vscode
