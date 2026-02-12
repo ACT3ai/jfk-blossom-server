@@ -8,14 +8,15 @@
   "license": "MIT",
   "scripts": {
     "prepublish": "pnpm build",
-    "start": "node --env-file=.env build/index.js",
+    "start": "node build/index.js",
     "build": "tsc",
     "postbuild": "cd admin && pnpm install && pnpm build",
-    "dev": "nodemon -i '**/data/**' -i '**/database.json' -i '**/database.old.json' --exec 'node --env-file=.env' --loader @swc-node/register/esm src/index.ts",
+    "dev": "nodemon -i '**/data/**' -i '**/database.json' -i '**/database.old.json' --exec 'node' --loader @swc-node/register/esm src/index.ts",
     "format": "prettier -w .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "docker:deploy": "docker compose up -d --build --force-recreate --remove-orphans"
   },
   "bin": "build/index.js",
   "files": [
@@ -31,6 +32,7 @@
     "blossom-server-sdk": "^0.8.0",
     "dayjs": "^1.11.13",
     "debug": "^4.4.0",
+    "dotenv": "^17.2.4",
     "drizzle-orm": "^0.45.1",
     "file-type": "^19.6.0",
     "fluent-ffmpeg": "^2.1.3",

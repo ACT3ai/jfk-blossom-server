@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'dotenv/config'
 import "./polyfill.js";
 import Koa from "koa";
 import serve from "koa-static";
