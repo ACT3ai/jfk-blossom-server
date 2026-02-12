@@ -38,10 +38,14 @@ export class UploadForm extends LitElement {
 
       this.status = "Signing...";
 
+      if (!window.nostr) {
+        throw new Error("No Nostr signer available. Please install a NIP-07 browser extension.");
+      }
+
       const endpoint = this.optimize ? "/media" : "/upload";
 
-      // create auth event
-      const auth = await window.nostr.signEvent({
+      // create auth event with a timeout
+      const signPromise = window.nostr.signEvent({
         kind: 24242,
         content: "Authorize Upload",
         created_at: unixNow(),
@@ -51,6 +55,10 @@ export class UploadForm extends LitElement {
           ["expiration", newExpirationValue()],
         ],
       });
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Signing timed out. Please check your Nostr signer extension.")), 30000),
+      );
+      const auth = await Promise.race([signPromise, timeoutPromise]);
       const authorization = "Nostr " + btoa(JSON.stringify(auth));
 
       // BUD-06 check upload

@@ -6,7 +6,7 @@ router.head("/:hash", async (ctx, next) => {
   if (!match) return next();
 
   const hash = match[1];
-  const blob = blobDB.getBlob(hash);
+  const blob = await blobDB.getBlob(hash);
   if (blob) {
     // signal support for range requests
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests

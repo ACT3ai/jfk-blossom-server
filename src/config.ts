@@ -13,7 +13,13 @@ const log = logger.extend("config");
 export type Rule = { id: string; type: string; pubkeys?: string[]; expiration: string };
 export type Config = {
   publicDomain: string;
-  databasePath: string;
+  database: {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+    database: string;
+  };
   storage: {
     backend: "local" | "s3";
     removeWhenNoOwners: boolean;
@@ -101,7 +107,13 @@ function loadJson(filepath: string, content: string) {
 
 const defaultConfig: Config = {
   publicDomain: "",
-  databasePath: "data/sqlite.db",
+  database: {
+    host: process.env.DATABASE_HOST || "localhost",
+    port: Number(process.env.DATABASE_PORT) || 5432,
+    user: process.env.DATABASE_USER || "blossom",
+    password: process.env.DATABASE_PASSWORD || "blossom",
+    database: process.env.DATABASE_NAME || "blossom",
+  },
   dashboard: { enabled: false, username: "admin" },
   discovery: {
     nostr: { enabled: false, relays: [] },

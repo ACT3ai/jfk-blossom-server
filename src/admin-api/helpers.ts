@@ -24,5 +24,3 @@ export function setContentRange(
   if (range) ctx.set("Content-Range", `rules ${range[0]}-${range[1]}/${total ?? result.length}`);
   else ctx.set("Content-Range", `rules */${result.length}`);
 }
-
-export const mapParams = (arr: any[]) => arr.map(() => "?").join(", ");

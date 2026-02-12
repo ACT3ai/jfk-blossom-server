@@ -59,8 +59,8 @@ router.put<UploadState>("/media", async (ctx) => {
     await removeUpload(optimizedUpload);
 
     // add owner
-    if (ctx.state.auth?.pubkey && !blobDB.hasOwner(upload.sha256, ctx.state.auth.pubkey)) {
-      blobDB.addOwner(blob.sha256, ctx.state.auth.pubkey);
+    if (ctx.state.auth?.pubkey && !(await blobDB.hasOwner(upload.sha256, ctx.state.auth.pubkey))) {
+      await blobDB.addOwner(blob.sha256, ctx.state.auth.pubkey);
     }
 
     ctx.status = 200;

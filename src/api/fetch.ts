@@ -32,7 +32,7 @@ router.get("/:hash", range, async (ctx, next) => {
 
   const storageResult = await searchStorage(search);
   if (storageResult) {
-    updateBlobAccess(search.hash, dayjs().unix());
+    await updateBlobAccess(search.hash, dayjs().unix());
 
     const redirect = getStorageRedirect(storageResult);
     if (redirect) return ctx.redirect(redirect);
@@ -96,8 +96,8 @@ router.get("/:hash", range, async (ctx, next) => {
               await storage.writeBlob(upload.sha256, uploadModule.readUpload(upload), type);
               await uploadModule.removeUpload(upload);
 
-              if (!blobDB.hasBlob(upload.sha256)) {
-                blobDB.addBlob({ sha256: upload.sha256, size: upload.size, type, uploaded: dayjs().unix() });
+              if (!(await blobDB.hasBlob(upload.sha256))) {
+                await blobDB.addBlob({ sha256: upload.sha256, size: upload.size, type, uploaded: dayjs().unix() });
               }
             } else {
               await uploadModule.removeUpload(upload);
