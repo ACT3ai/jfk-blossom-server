@@ -26,6 +26,22 @@ async function createStorage() {
       config.storage.s3,
     );
     s3.publicURL = config.storage.s3!.publicURL;
+
+    // Override writeBlob to remove the "x-amz-acl: public-read" header
+    // so uploads work with S3 buckets that have Block Public Access enabled
+    const _originalWriteBlob = s3.writeBlob.bind(s3);
+    s3.writeBlob = async (sha256: string, stream: import("node:stream").Readable | Buffer, type?: string) => {
+      const name = (s3 as any).createObjectName(sha256, type);
+      await s3.client.putObject(s3.bucket, name, stream, undefined, {
+        "Content-Type": type,
+      });
+      let size = 0;
+      if (stream instanceof Buffer) {
+        size = stream.length;
+      }
+      s3.objects.push({ name, size });
+    };
+
     return s3;
   } else throw new Error("Unknown cache backend " + config.storage.backend);
 }
