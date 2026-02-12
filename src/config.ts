@@ -1,8 +1,6 @@
 import { lilconfig } from "lilconfig";
 import yaml from "yaml";
 import fs from "node:fs";
-import { S3StorageOptions } from "blossom-server-sdk";
-
 import logger from "./logger.js";
 import { mergeDeep } from "./helpers/object.js";
 import { VideoOptions } from "./optimize/video.js";
@@ -32,7 +30,12 @@ export type Config = {
       secretKey: string;
       bucket: string;
       publicURL?: string;
-    } & S3StorageOptions;
+      region?: string;
+      port?: number;
+      useSSL?: boolean;
+      pathStyle?: boolean;
+      useAccelerateEndpoint?: string;
+    };
     rules: Rule[];
   };
   dashboard: {

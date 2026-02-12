@@ -1,7 +1,8 @@
 import { mkdirp } from "mkdirp";
 import { config } from "../config.js";
 import { BlobMetadata } from "blossom-server-sdk";
-import { LocalStorage, S3Storage, IBlobStorage } from "blossom-server-sdk/storage";
+import { LocalStorage, IBlobStorage } from "blossom-server-sdk/storage";
+import { AwsS3Storage } from "./s3.js";
 import dayjs from "dayjs";
 import { eq, like, inArray, isNull, and } from "drizzle-orm";
 
@@ -18,31 +19,7 @@ async function createStorage() {
     await mkdirp(config.storage.local!.dir);
     return new LocalStorage(config.storage.local!.dir);
   } else if (config.storage.backend === "s3") {
-    const s3 = new S3Storage(
-      config.storage.s3!.endpoint,
-      config.storage.s3!.accessKey,
-      config.storage.s3!.secretKey,
-      config.storage.s3!.bucket,
-      config.storage.s3,
-    );
-    s3.publicURL = config.storage.s3!.publicURL;
-
-    // Override writeBlob to remove the "x-amz-acl: public-read" header
-    // so uploads work with S3 buckets that have Block Public Access enabled
-    const _originalWriteBlob = s3.writeBlob.bind(s3);
-    s3.writeBlob = async (sha256: string, stream: import("node:stream").Readable | Buffer, type?: string) => {
-      const name = (s3 as any).createObjectName(sha256, type);
-      await s3.client.putObject(s3.bucket, name, stream, undefined, {
-        "Content-Type": type,
-      });
-      let size = 0;
-      if (stream instanceof Buffer) {
-        size = stream.length;
-      }
-      s3.objects.push({ name, size });
-    };
-
-    return s3;
+    return new AwsS3Storage(config.storage.s3!);
   } else throw new Error("Unknown cache backend " + config.storage.backend);
 }
 
@@ -65,7 +42,7 @@ export async function searchStorage(search: BlobSearch): Promise<StoragePointer 
 
 export function getStorageRedirect(pointer: StoragePointer) {
   const publicURL = config.storage.s3?.publicURL;
-  if (storage instanceof S3Storage && publicURL) {
+  if (storage instanceof AwsS3Storage && publicURL) {
     const object = storage.objects.find((obj) => obj.name.startsWith(pointer.hash));
     if (object) return publicURL + object.name;
   }
