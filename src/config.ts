@@ -70,6 +70,7 @@ export type Config = {
     enabled: boolean;
     proxy: string;
   };
+  uploadToken?: string;
 };
 
 /**
