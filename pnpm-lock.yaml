@@ -20,9 +20,6 @@ importers:
       '@nostr-dev-kit/ndk':
         specifier: ^2.10.7
         version: 2.10.7(typescript@5.8.3)
-      better-sqlite3:
-        specifier: ^11.7.0
-        version: 11.7.0
       blossom-server-sdk:
         specifier: ^0.8.0
         version: 0.8.0
@@ -37,7 +34,7 @@ importers:
         version: 17.2.4
       drizzle-orm:
         specifier: ^0.45.1
-        version: 0.45.1(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@11.7.0)(pg@8.18.0)
+        version: 0.45.1(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@11.8.1)(pg@8.18.0)
       file-type:
         specifier: ^19.6.0
         version: 19.6.0
@@ -114,9 +111,6 @@ importers:
       '@swc/types':
         specifier: ^0.1.23
         version: 0.1.23
-      '@types/better-sqlite3':
-        specifier: ^7.6.13
-        version: 7.6.13
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
@@ -1434,9 +1428,6 @@ packages:
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
-
-  better-sqlite3@11.7.0:
-    resolution: {integrity: sha512-mXpa5jnIKKHeoGzBrUJrc65cXFKcILGZpU3FXR0pradUEm9MA7UZz02qfEejaMcm9iXrSOCenwwYMJ/tZ1y5Ig==}
 
   better-sqlite3@11.8.1:
     resolution: {integrity: sha512-9BxNaBkblMjhJW8sMRZxnxVTRgbRmssZW0Oxc1MPBTfiR+WW21e2Mk4qu8CzrcZb1LwPCnFsfDEzq+SNcBU8eg==}
@@ -4246,6 +4237,7 @@ snapshots:
   '@types/better-sqlite3@7.6.13':
     dependencies:
       '@types/node': 22.10.2
+    optional: true
 
   '@types/body-parser@1.19.5':
     dependencies:
@@ -4431,11 +4423,6 @@ snapshots:
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
-
-  better-sqlite3@11.7.0:
-    dependencies:
-      bindings: 1.5.0
-      prebuild-install: 7.1.2
 
   better-sqlite3@11.8.1:
     dependencies:
@@ -4651,11 +4638,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.1(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@11.7.0)(pg@8.18.0):
+  drizzle-orm@0.45.1(@types/better-sqlite3@7.6.13)(@types/pg@8.16.0)(better-sqlite3@11.8.1)(pg@8.18.0):
     optionalDependencies:
       '@types/better-sqlite3': 7.6.13
       '@types/pg': 8.16.0
-      better-sqlite3: 11.7.0
+      better-sqlite3: 11.8.1
       pg: 8.18.0
 
   dunder-proto@1.0.1:
