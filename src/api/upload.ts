@@ -20,6 +20,14 @@ export function checkUpload(
 ) {
   return async (ctx: ParameterizedContext<DefaultState & CommonState>, next: Next) => {
     if (ctx.method === "HEAD" || ctx.method === "PUT") {
+      // check upload token
+      if (config.uploadToken) {
+        const token = ctx.header["x-jfksocial-token"] as string | undefined;
+        if (!token || token !== config.uploadToken) {
+          throw new HttpErrors.Unauthorized("Invalid upload token");
+        }
+      }
+
       // check auth
       if (opts.requireAuth) {
         if (!ctx.state.auth) throw new HttpErrors.Unauthorized("Missing Auth event");
