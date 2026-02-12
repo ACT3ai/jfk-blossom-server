@@ -12,6 +12,8 @@ export class UploadForm extends LitElement {
     selected: { state: true },
     optimize: { state: true },
     status: { state: true, type: String },
+    token: { state: true, type: String },
+    tokenError: { state: true, type: String },
   };
 
   createRenderRoot() {
@@ -22,6 +24,12 @@ export class UploadForm extends LitElement {
     e.preventDefault();
 
     try {
+      if (!this.token || !this.token.trim()) {
+        this.tokenError = "Token is required";
+        throw new Error("Please enter a valid token");
+      }
+      this.tokenError = "";
+
       if (!this.selected) throw new Error("Select file first");
 
       let file = this.selected;
@@ -70,6 +78,7 @@ export class UploadForm extends LitElement {
           "X-Content-Type": file.type,
           "X-Content-Length": file.size,
           "X-Sha-256": hash,
+          "X-JFKSOCIAL-Token": this.token.trim(),
         },
       });
 
@@ -83,7 +92,7 @@ export class UploadForm extends LitElement {
         method: "PUT",
         body: file,
         // attach Authorization: Nostr <base64> header to request
-        headers: { authorization },
+        headers: { authorization, "X-JFKSOCIAL-Token": this.token.trim() },
       });
 
       if (res.ok) {
@@ -105,6 +114,13 @@ export class UploadForm extends LitElement {
 
   inputChange(e) {
     this.selected = e.target.files[0];
+  }
+
+  tokenChange(e) {
+    this.token = e.target.value;
+    if (this.token && this.token.trim()) {
+      this.tokenError = "";
+    }
   }
 
   optimizeChange(e) {
@@ -156,6 +172,18 @@ export class UploadForm extends LitElement {
         <a class="text-sm text-blue-400" href="https://github.com/hzrd149/blossom-server">Github</a>
       </div>
       <form class="space-y-3" @submit="${this.upload}">
+        <div class="grid grid-cols-1 space-y-2">
+          <label class="text-sm font-bold text-gray-500 tracking-wide" for="upload-token">Token</label>
+          <input
+            id="upload-token"
+            type="text"
+            placeholder="Enter your upload token"
+            class="text-sm p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${this.tokenError ? 'border-red-500' : 'border-gray-300'}"
+            .value="${this.token || ""}"
+            @input="${this.tokenChange}"
+          />
+          ${this.tokenError ? html`<p class="text-red-500 text-xs">${this.tokenError}</p>` : null}
+        </div>
         <div class="grid grid-cols-1 space-y-2">
           <label class="text-sm font-bold text-gray-500 tracking-wide">Selected File</label>
           <div class="flex items-center justify-center w-full">
