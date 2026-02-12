@@ -33,7 +33,7 @@ jobs:
           script_stop: true
           script: |
             export PATH="/home/ubuntu/.nvm/versions/node/v20.18.2/bin:$PATH"
-            cd ~/blossom-server
+            cd ~/jfk-blossom-server
             git reset --hard HEAD
             git pull origin main
             pnpm docker:deploy
